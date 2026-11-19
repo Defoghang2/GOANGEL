@@ -524,6 +524,56 @@ def _attach_footballdata_odds(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def _ensure_footballdata_odds(df: pd.DataFrame) -> Tuple[pd.DataFrame, bool]:
+    """Attache les cotes football-data si la couverture est insuffisante.
+
+    Returns:
+        (df enrichi ou inchangé, True si les cotes ont été (re)attachées)
+    """
+    if df is None or df.empty:
+        return df, False
+    coverage = 0.0
+    if "odds_markets" in df.columns:
+        try:
+            has = df["odds_markets"].map(
+                lambda m: isinstance(m, dict)
+                and all(k in m for k in ("home", "draw", "away"))
+            )
+            coverage = float(has.mean())
+        except Exception:
+            coverage = 0.0
+    if coverage >= 0.60:
+        stage_print(
+            f"✅ Cotes football-data déjà présentes : {coverage*100:.1f}% — attach skippé"
+        )
+        return df, False
+    stage_print(
+        f"🔗 Attachement cotes football-data "
+        f"(couverture actuelle {coverage*100:.1f}% < 60%)"
+    )
+    try:
+        enriched = _attach_footballdata_odds(df)
+    except Exception as exc:
+        logger.error("footballdata attach échoué : %s", exc)
+        stage_print(
+            f"⚠️ Attachement cotes échoué : {exc} — poursuite sans cotes"
+        )
+        return df, False
+    new_cov = 0.0
+    if "odds_markets" in enriched.columns:
+        try:
+            new_cov = float(
+                enriched["odds_markets"].map(
+                    lambda m: isinstance(m, dict)
+                    and all(k in m for k in ("home", "draw", "away"))
+                ).mean()
+            )
+        except Exception:
+            new_cov = 0.0
+    stage_print(f"   → nouvelle couverture : {new_cov*100:.1f}%")
+    return enriched, new_cov > coverage + 1e-6
+
+
 def _filter_leagues(df: pd.DataFrame) -> pd.DataFrame:
     if df is None or df.empty or "competition_code" not in df.columns:
         return df
@@ -1434,39 +1484,84 @@ def _stage_refresh() -> None:
 import time as _time
 from datetime import datetime as _datetime
 
+def _compute_and_save_selection() -> Dict[str, Any]:
+    """Calcule la sélection active de features et la persiste sur disque.
+
+    Wrapper autour de _resolve_selection() : centralise le calcul pour
+    que les stages suivants puissent relire la sélection sans recalculer.
+    Persistance : cache/stages/feature_selection.json
+    """
+    sel = _resolve_selection()
+    path = Path(CACHE_DIR) / "stages" / "feature_selection.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload: Dict[str, Any] = {
+        "selected_names": sel["selected_names"],
+        "selected_idx": sel["selected_idx"],
+        "selection_id": sel["selection_id"],
+        "n_features": sel["n_features"],
+        "computed_at": datetime.now().isoformat(),
+    }
+    _atomic_write_json(path, payload)
+    logger.info(
+        "Selection features calculée : %d features (id=%s) -> %s",
+        payload["n_features"], payload["selection_id"], path,
+    )
+    return payload
+
+
 def _stage_prepare() -> None:
     stage_print("🚀 STAGE PREPARE")
     hist_path = Path(CACHE_DIR) / "historical.pkl"
     feats_path = Path(CACHE_DIR) / "stages" / "features.pkl"
     sel_path = Path(CACHE_DIR) / "stages" / "feature_selection.json"
 
+    # ── Fast-path : historical.pkl déjà présent ─────────────────────
     if hist_path.exists():
         try:
-            stage_print(f"✅ historical.pkl trouvé ({hist_path.stat().st_size / 1024 / 1024:.1f} MB) — API skippée")
+            stage_print(
+                f"✅ historical.pkl trouvé "
+                f"({hist_path.stat().st_size / 1024 / 1024:.1f} MB) — API skippée"
+            )
             df_past = _atomic_read_pickle(hist_path)
             if df_past is not None and not df_past.empty:
-                if not feats_path.exists():
-                    stage_print("🔧 Génération des features manquantes...")
+                df_past, cotes_ajoutees = _ensure_footballdata_odds(df_past)
+                if cotes_ajoutees:
+                    _atomic_write_pickle(hist_path, df_past)
+                    stage_print("💾 historical.pkl réécrit avec cotes football-data")
+
+                if not feats_path.exists() or cotes_ajoutees:
+                    stage_print(
+                        "🔧 Génération des features "
+                        f"({'cotes ajoutées' if cotes_ajoutees else 'cache absent'})..."
+                    )
                     _stage_save_features(df_past)
                 if not sel_path.exists():
                     stage_print("🔧 Calcul de la sélection de features...")
                     _compute_and_save_selection()
-                stage_print(f"✅ STAGE PREPARE terminé (depuis cache) : {len(df_past)} matchs")
+
+                stage_print(
+                    f"✅ STAGE PREPARE terminé (depuis cache) : {len(df_past)} matchs"
+                )
                 return
         except Exception as exc:
-            logger.warning("Lecture cache local échouée : %s — repli sur l'API", exc)
+            logger.warning(
+                "Lecture cache local échouée : %s — repli sur l'API", exc
+            )
 
+    # ── Branche API : téléchargement complet ────────────────────────
     stage_print("📥 historical.pkl absent ou invalide — téléchargement complet via API")
     try:
         ckpt_mgr = CheckpointManager(
             checkpoint_dir=Path(CHECKPOINT_DIR),
             save_interval=30.0,
             push_interval=300.0,
-            github_enabled=os.getenv("GOANGEL_GITHUB_PUSH", "false").lower() in ("1", "true", "yes", "on"),
+            github_enabled=os.getenv("GOANGEL_GITHUB_PUSH", "false").lower()
+                in ("1", "true", "yes", "on"),
             github_repo=os.getenv("GOANGEL_GITHUB_REPO", "Defoghang2/GOANGEL"),
             github_user=os.getenv("GOANGEL_GITHUB_USER", "Defoghang2"),
             github_token=os.getenv("GH_PAT", ""),
-            github_branch=os.getenv("GOANGEL_GITHUB_BRANCH", "cache-auto"))
+            github_branch=os.getenv("GOANGEL_GITHUB_BRANCH", "cache-auto"),
+        )
     except Exception as exc:
         logger.warning("CheckpointManager init échoué : %s", exc)
         ckpt_mgr = None
@@ -1474,6 +1569,15 @@ def _stage_prepare() -> None:
     df_past = _load_full_history(checkpoint_mgr=ckpt_mgr)
     if df_past is None or df_past.empty:
         raise RuntimeError("Historique vide après récupération")
+
+    # ── Filtrage + attachement cotes football-data (protégé) ────────
+    df_past = _filter_leagues(df_past)
+    df_past, _cotes_api = _ensure_footballdata_odds(df_past)
+    if not _cotes_api:
+        stage_print(
+            "⚠️  Aucune cote football-data attachée — "
+            "les features mkt_* seront NaN (impact finalize_agg)"
+        )
 
     _atomic_write_pickle(hist_path, df_past)
     _stage_save_features(df_past)
@@ -1486,6 +1590,8 @@ def _stage_prepare() -> None:
             pass
 
     stage_print(f"✅ STAGE PREPARE terminé (API) : {len(df_past)} matchs")
+
+
 def _stage_run(stage_name: str) -> int:
     if stage_name == "next":
         nxt = _next_stage()

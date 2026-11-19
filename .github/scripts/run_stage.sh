@@ -1,6 +1,11 @@
 #!/bin/bash
 set +e
 
+export OMP_NUM_THREADS=2
+export MKL_NUM_THREADS=2
+export OPENBLAS_NUM_THREADS=2
+export NUMEXPR_NUM_THREADS=2
+
 if [ -z "${STAGE}" ]; then
   echo "STAGE env var requis" >&2
   exit 2
@@ -249,8 +254,6 @@ fi
 
 NEW_COUNT=$((ATTEMPT_COUNT + 1))
 echo "{\"count\": ${NEW_COUNT}, \"stage\": \"${STAGE}\", \"last_attempt\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\", \"max\": ${MAX_ATTEMPTS}}" > "${ATTEMPT_FILE}"
-NEW_COUNT=$((ATTEMPT_COUNT + 1))
-echo "{\"count\": ${NEW_COUNT}, \"stage\": \"${STAGE}\", \"last_attempt\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\", \"max\": ${MAX_ATTEMPTS}}" > "${ATTEMPT_FILE}"
 echo "▶️  Tentative ${NEW_COUNT}/${MAX_ATTEMPTS} pour ${STAGE}"
 
 START_TS=$(date +%s)
@@ -349,8 +352,6 @@ fi
 
 if [ "${RC}" = "0" ]; then
   echo "✅ Stage ${STAGE} terminé avec succès (RC=0)"
-  
-  echo "✅ Stage ${STAGE} terminé avec succès (RC=0)"
   exit 0
 fi
 
@@ -369,8 +370,3 @@ echo "  ❌ HARD FAILURE sur ${STAGE} (RC=${RC})"
 echo "  🛑 ARRÊT TOTAL DE LA CHAÎNE"
 echo "═══════════════════════════════════════════════════════════"
 exit 1
-
-export OMP_NUM_THREADS=2
-export MKL_NUM_THREADS=2
-export OPENBLAS_NUM_THREADS=2
-export NUMEXPR_NUM_THREADS=2
