@@ -1,6 +1,12 @@
 #!/bin/bash
 set +e
 
+# ── Stack réduite pour supporter 3280 threads (80 workers × 41 tokens)
+#    Sans ça : 3280 × 8 MB = 26 GB de stack → OOM garanti.
+#    Avec 256 KB : 3280 × 256 KB = 840 MB → OK sur ubuntu-latest.
+export PYTHONTHREADSTACKSIZE=262144
+ulimit -s 262144 2>/dev/null || true
+
 export OMP_NUM_THREADS=2
 export MKL_NUM_THREADS=2
 export OPENBLAS_NUM_THREADS=2

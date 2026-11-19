@@ -29,6 +29,7 @@ from config import (
     BZZOIRO_RATE_LIMIT_PER_MINUTE,
     BZZOIRO_RATE_LIMIT_SAFETY_MARGIN,
     BZZOIRO_MAX_WORKERS,
+    BZZOIRO_WORKERS_PER_KEY,
     stage_print,
 )
 
@@ -50,7 +51,7 @@ _API_PAGE_LIMIT: int = 100
 _API_MAX_PAGE_LIMIT: int = 200
 _API_PAGE_SLEEP_SECONDS: float = 0.05
 
-_MAX_PARALLEL_WORKERS: int = max(1, min(len(tokens), int(BZZOIRO_MAX_WORKERS)))
+_MAX_PARALLEL_WORKERS: int = max(1, int(BZZOIRO_WORKERS_PER_KEY) * max(1, len(tokens)))
 
 _CHECKPOINT_DIR: Path = CACHE_DIR / "checkpoints"
 _CHECKPOINT_DIR.mkdir(parents=True, exist_ok=True)
@@ -1153,7 +1154,15 @@ def get_historical_matches(
     league_ids = list(TOP_30_LEAGUES.keys())
     total_leagues = len(league_ids)
     n_tokens = max(1, len(token_manager.tokens))
-    n_workers = max(1, min(n_tokens, _MAX_PARALLEL_WORKERS))
+    _workers_target = max(1, int(BZZOIRO_WORKERS_PER_KEY) * n_tokens)
+    n_workers = max(1, min(_workers_target, _MAX_PARALLEL_WORKERS))
+    print(
+        f"⚙️  Workers actifs : {n_workers} "
+        f"(tokens={n_tokens} × workers_per_key={BZZOIRO_WORKERS_PER_KEY}, "
+        f"rate={_RATE_LIMIT_PER_MINUTE}/min/token → "
+        f"{n_tokens * _RATE_LIMIT_PER_MINUTE} req/min max)",
+        flush=True,
+    )
 
     stage_print("♻️ RÉCUPÉRATION DE L'HISTORIQUE Bzzoiro")
     print(
