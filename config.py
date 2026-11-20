@@ -329,10 +329,10 @@ MIN_MATCHES_FOR_TRAINING: int = _resolve_int(
 )
 MIN_MATCHES_PER_CLASS: int = 50
 BZZOIRO_WORKERS_PER_KEY: int = _resolve_int(
-    "BZZOIRO_WORKERS_PER_KEY", 2, 1, 32
+    "BZZOIRO_WORKERS_PER_KEY", 100, 1, 200
 )
 BZZOIRO_MAX_WORKERS: int = _resolve_int(
-    "BZZOIRO_MAX_WORKERS", 64, 1, 512
+    "BZZOIRO_MAX_WORKERS", 4100, 1, 5000
 )
 BZZOIRO_RATE_LIMIT_PER_MINUTE: int = _resolve_int(
     "BZZOIRO_RATE_LIMIT_PER_MINUTE", 10, 1, 600
@@ -650,12 +650,12 @@ def _validate_api_parameters() -> List[str]:
     return errors
 def _validate_bzzoiro_params() -> List[str]:
     errors: List[str] = []
-    if BZZOIRO_WORKERS_PER_KEY < 1 or BZZOIRO_WORKERS_PER_KEY > 32:
+    if BZZOIRO_WORKERS_PER_KEY < 1 or BZZOIRO_WORKERS_PER_KEY > 200:
         errors.append(
             f"BZZOIRO_WORKERS_PER_KEY hors bornes "
             f"(reçu {BZZOIRO_WORKERS_PER_KEY})"
         )
-    if BZZOIRO_MAX_WORKERS < 1 or BZZOIRO_MAX_WORKERS > 512:
+    if BZZOIRO_MAX_WORKERS < 1 or BZZOIRO_MAX_WORKERS > 5000:
         errors.append(
             f"BZZOIRO_MAX_WORKERS hors bornes "
             f"(reçu {BZZOIRO_MAX_WORKERS})"

@@ -51,7 +51,7 @@ _API_PAGE_LIMIT: int = 100
 _API_MAX_PAGE_LIMIT: int = 200
 _API_PAGE_SLEEP_SECONDS: float = 0.05
 
-_MAX_PARALLEL_WORKERS: int = max(1, int(BZZOIRO_WORKERS_PER_KEY) * max(1, len(tokens)))
+_MAX_PARALLEL_WORKERS: int = max(1, int(BZZOIRO_MAX_WORKERS))
 
 _CHECKPOINT_DIR: Path = CACHE_DIR / "checkpoints"
 _CHECKPOINT_DIR.mkdir(parents=True, exist_ok=True)
