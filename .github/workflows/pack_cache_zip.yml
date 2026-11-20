@@ -1,0 +1,37 @@
+name: Créer l'archive ZIP complète
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-zip:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Rclone
+        uses: AnimMouse/setup-rclone@v1
+        with:
+          rclone_config: ${{ secrets.RCLONE_CONFIG }}
+
+      - name: Télécharger le cache depuis Google Drive
+        run: |
+          mkdir -p cache
+          rclone sync gdrive:GOANGEL/cache ./cache --progress
+          echo "✅ Cache téléchargé."
+          du -sh cache/
+
+      - name: Créer l'archive ZIP unique
+        run: |
+          echo "📦 Compression en cours..."
+          zip -r GOANGEL_CACHE_COMPLET.zip cache/
+          echo "✅ Archive créée :"
+          ls -lh GOANGEL_CACHE_COMPLET.zip
+
+      - name: Uploader l'artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: GOANGEL_CACHE_COMPLET
+          path: GOANGEL_CACHE_COMPLET.zip
+          retention-days: 14
