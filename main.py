@@ -524,6 +524,41 @@ def _attach_footballdata_odds(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
+def _ensure_footballdata_odds(df: pd.DataFrame) -> Tuple[pd.DataFrame, bool]:
+    if df is None or df.empty:
+        return df, False
+    coverage = 0.0
+    if "odds_markets" in df.columns:
+        try:
+            has = df["odds_markets"].map(
+                lambda m: isinstance(m, dict) and all(k in m for k in ("home", "draw", "away"))
+            )
+            coverage = float(has.mean())
+        except Exception:
+            pass
+    if coverage >= 0.60:
+        stage_print(f"✅ Cotes football-data déjà présentes : {coverage*100:.1f}% — attach skippé")
+        return df, False
+    stage_print(f"🔗 Attachement cotes football-data (couverture actuelle {coverage*100:.1f}% < 60%)")
+    try:
+        enriched = _attach_footballdata_odds(df)
+    except Exception as exc:
+        logger.error("footballdata attach échoué : %s", exc)
+        stage_print(f"⚠️ Attachement cotes échoué : {exc} — poursuite sans cotes")
+        return df, False
+    new_cov = 0.0
+    if "odds_markets" in enriched.columns:
+        try:
+            new_cov = float(
+                enriched["odds_markets"].map(
+                    lambda m: isinstance(m, dict) and all(k in m for k in ("home", "draw", "away"))
+                ).mean()
+            )
+        except Exception:
+            pass
+    stage_print(f"   → nouvelle couverture : {new_cov*100:.1f}%")
+    return enriched, new_cov > coverage + 1e-6
+
 def _filter_leagues(df: pd.DataFrame) -> pd.DataFrame:
     if df is None or df.empty or "competition_code" not in df.columns:
         return df
@@ -859,6 +894,22 @@ def _resolve_selection() -> Dict[str, Any]:
         "selection_id": hashlib.sha1("|".join(names).encode()).hexdigest()[:12],
         "n_features": len(FEATURE_NAMES_FULL),
     }
+
+def _compute_and_save_selection() -> Dict[str, Any]:
+    sel = _resolve_selection()
+    path = Path(CACHE_DIR) / "stages" / "feature_selection.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload: Dict[str, Any] = {
+        "selected_names": sel["selected_names"],
+        "selected_idx": sel["selected_idx"],
+        "selection_id": sel["selection_id"],
+        "n_features": sel["n_features"],
+        "computed_at": datetime.now().isoformat(),
+    }
+    _atomic_write_json(path, payload)
+    logger.info("Selection features calculée : %d features (id=%s)", payload["n_features"], payload["selection_id"])
+    return payload
+
 
 
 def _ece(y: np.ndarray, P: np.ndarray, bins: int = 10) -> float:
@@ -1443,7 +1494,11 @@ def _stage_prepare() -> None:
         try:
             df_past = _atomic_read_pickle(hist_path)
             if df_past is not None and not df_past.empty:
-                if not feats_path.exists():
+                df_past, cotes_ajoutees = _ensure_footballdata_odds(df_past)
+                if cotes_ajoutees:
+                    _atomic_write_pickle(hist_path, df_past)
+                    stage_print("💾 historical.pkl réécrit avec cotes football-data")
+                if not feats_path.exists() or cotes_ajoutees:
                     _stage_save_features(df_past)
                 if not sel_path.exists():
                     _compute_and_save_selection()
