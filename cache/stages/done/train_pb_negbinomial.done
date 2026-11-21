@@ -1,0 +1,12 @@
+{
+  "stage": "train_pb_negbinomial",
+  "files": {
+    "/home/runner/work/GOANGEL/GOANGEL/cache/stages/models/pb_NegativeBinomialGoalModel.pkl": "c002731e8de1bc94873f4bb81c963505c7f6631a41cc9d9fe2803fd3021253a3"
+  },
+  "ts": "2026-11-21T07:04:14.490442",
+  "schema": "goangel-bzzoiro-2026.10-v2",
+  "feature_schema": 216,
+  "leagues_sig": "2f7f9751b5aa",
+  "odds_source": "footballdata-v1",
+  "selection_id": "cec9105c69ff"
+}

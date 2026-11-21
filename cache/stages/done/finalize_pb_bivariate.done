@@ -1,0 +1,12 @@
+{
+  "stage": "finalize_pb_bivariate",
+  "files": {
+    "/home/runner/work/GOANGEL/GOANGEL/cache/stages/finalize/BivariatePoissonGoalModel.pkl": "0c39b259e84e5a9d7a5779f5d0ff722fc4826ffc7d9c122e1103ce7b64a5c2e9"
+  },
+  "ts": "2026-11-21T11:33:48.654111",
+  "schema": "goangel-bzzoiro-2026.10-v2",
+  "feature_schema": 216,
+  "leagues_sig": "2f7f9751b5aa",
+  "odds_source": "footballdata-v1",
+  "selection_id": "cec9105c69ff"
+}

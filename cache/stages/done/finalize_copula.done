@@ -1,0 +1,12 @@
+{
+  "stage": "finalize_copula",
+  "files": {
+    "/home/runner/work/GOANGEL/GOANGEL/cache/stages/finalize/CopulaModel.pkl": "38143be3222c0c63cccbd5acc6ede07eba0ce0e52adaa0b3db72cdc69a5d8d4c"
+  },
+  "ts": "2026-11-21T12:23:03.414242",
+  "schema": "goangel-bzzoiro-2026.10-v2",
+  "feature_schema": 216,
+  "leagues_sig": "2f7f9751b5aa",
+  "odds_source": "footballdata-v1",
+  "selection_id": "cec9105c69ff"
+}

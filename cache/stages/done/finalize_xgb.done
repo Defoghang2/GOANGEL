@@ -1,0 +1,12 @@
+{
+  "stage": "finalize_xgb",
+  "files": {
+    "/home/runner/work/GOANGEL/GOANGEL/cache/stages/finalize/XGB.pkl": "3977a0fe94b7e283fd9d63e0aa76235580e3e517ee24b055fbb38a0f5d6ebac3"
+  },
+  "ts": "2026-11-21T10:10:13.312486",
+  "schema": "goangel-bzzoiro-2026.10-v2",
+  "feature_schema": 216,
+  "leagues_sig": "2f7f9751b5aa",
+  "odds_source": "footballdata-v1",
+  "selection_id": "cec9105c69ff"
+}

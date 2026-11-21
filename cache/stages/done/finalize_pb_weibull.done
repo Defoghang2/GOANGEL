@@ -1,0 +1,12 @@
+{
+  "stage": "finalize_pb_weibull",
+  "files": {
+    "/home/runner/work/GOANGEL/GOANGEL/cache/stages/finalize/WeibullCopulaGoalsModel.pkl": "562057a3b53866a0e25b3a9dfbd1d70a60f2417e97b885190e27501738787fa9"
+  },
+  "ts": "2026-11-21T11:51:43.412196",
+  "schema": "goangel-bzzoiro-2026.10-v2",
+  "feature_schema": 216,
+  "leagues_sig": "2f7f9751b5aa",
+  "odds_source": "footballdata-v1",
+  "selection_id": "cec9105c69ff"
+}

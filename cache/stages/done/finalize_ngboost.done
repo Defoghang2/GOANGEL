@@ -1,0 +1,12 @@
+{
+  "stage": "finalize_ngboost",
+  "files": {
+    "/home/runner/work/GOANGEL/GOANGEL/cache/stages/finalize/NGBoost.pkl": "4a30ea3ffb539b1ff221c66416837b9c940b23f97f16163bb632f17daecec3a2"
+  },
+  "ts": "2026-11-21T10:33:10.783947",
+  "schema": "goangel-bzzoiro-2026.10-v2",
+  "feature_schema": 216,
+  "leagues_sig": "2f7f9751b5aa",
+  "odds_source": "footballdata-v1",
+  "selection_id": "cec9105c69ff"
+}

@@ -1,0 +1,12 @@
+{
+  "stage": "train_svm",
+  "files": {
+    "/home/runner/work/GOANGEL/GOANGEL/cache/stages/models/ml_SVM.pkl": "b9b87f24869511ebda88b1df1d46b60d2426792e8a18c5bb5e2b6ab883a5aad3"
+  },
+  "ts": "2026-11-21T05:46:42.800178",
+  "schema": "goangel-bzzoiro-2026.10-v2",
+  "feature_schema": 216,
+  "leagues_sig": "2f7f9751b5aa",
+  "odds_source": "footballdata-v1",
+  "selection_id": "cec9105c69ff"
+}

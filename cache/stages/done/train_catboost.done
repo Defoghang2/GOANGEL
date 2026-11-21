@@ -1,0 +1,12 @@
+{
+  "stage": "train_catboost",
+  "files": {
+    "/home/runner/work/GOANGEL/GOANGEL/cache/stages/models/ml_CatBoost.pkl": "b8a35f7c5713bb6159819fafb31afe9670cc75efa030e40c25e1f8d21fe7982b"
+  },
+  "ts": "2026-11-21T04:08:29.054711",
+  "schema": "goangel-bzzoiro-2026.10-v2",
+  "feature_schema": 216,
+  "leagues_sig": "2f7f9751b5aa",
+  "odds_source": "footballdata-v1",
+  "selection_id": "cec9105c69ff"
+}
