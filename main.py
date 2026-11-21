@@ -1521,6 +1521,11 @@ def _stage_prepare() -> None:
     df_past = _load_full_history(checkpoint_mgr=ckpt_mgr)
     if df_past is None or df_past.empty:
         raise RuntimeError("Historique vide après récupération")
+    df_past = _filter_leagues(df_past)
+    df_past, _cotes_api = _ensure_footballdata_odds(df_past)
+    if not _cotes_api:
+        stage_print("⚠️  Aucune cote football-data attachée — les features mkt_* seront NaN")
+
     _atomic_write_pickle(hist_path, df_past)
     _stage_save_features(df_past)
     _compute_and_save_selection()
