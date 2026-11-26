@@ -1,0 +1,12 @@
+{
+  "stage": "train_dixon_coles_dynamic",
+  "files": {
+    "/home/runner/work/GOANGEL/GOANGEL/cache/stages/models/pb_DixonColesDynamicModel.pkl": "1083bff917a29d44f4d2a2c90502b5ecb3dda042d59715f3e67c23e2ebbd351a"
+  },
+  "ts": "2026-11-25T20:28:33.661757",
+  "schema": "goangel-bzzoiro-2026.10-v2",
+  "feature_schema": 216,
+  "leagues_sig": "2f7f9751b5aa",
+  "odds_source": "footballdata-v1",
+  "selection_id": "cec9105c69ff"
+}

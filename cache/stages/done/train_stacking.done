@@ -1,0 +1,12 @@
+{
+  "stage": "train_stacking",
+  "files": {
+    "/home/runner/work/GOANGEL/GOANGEL/cache/stages/models/ml_Stacking.pkl": "0310b50909ee881085ad191e6284a84a619e761f2deb0cef12d129dc7e040439"
+  },
+  "ts": "2026-11-25T21:03:51.480345",
+  "schema": "goangel-bzzoiro-2026.10-v2",
+  "feature_schema": 216,
+  "leagues_sig": "2f7f9751b5aa",
+  "odds_source": "footballdata-v1",
+  "selection_id": "cec9105c69ff"
+}

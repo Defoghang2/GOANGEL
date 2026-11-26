@@ -1,0 +1,12 @@
+{
+  "stage": "finalize_realmlp",
+  "files": {
+    "/home/runner/work/GOANGEL/GOANGEL/cache/stages/finalize/RealMLP.pkl": "ba0731467d32fc4d63f394f59f38aa8937ef63f6b91e603c00e5a78a4ff34774"
+  },
+  "ts": "2026-11-25T22:16:05.271405",
+  "schema": "goangel-bzzoiro-2026.10-v2",
+  "feature_schema": 216,
+  "leagues_sig": "2f7f9751b5aa",
+  "odds_source": "footballdata-v1",
+  "selection_id": "cec9105c69ff"
+}

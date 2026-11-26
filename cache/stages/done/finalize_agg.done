@@ -1,0 +1,14 @@
+{
+  "stage": "finalize_agg",
+  "files": {
+    "/home/runner/work/GOANGEL/GOANGEL/cache/models.pkl": "0b50ae6a1c55c88bb8532575c9566b9bb858932d419d40a2becf28ce8998d959",
+    "/home/runner/work/GOANGEL/GOANGEL/cache/scaler.pkl": "8d4d72a145e3bc4b108779e2ccd778fc7e97ac49fb35848ee0972f48b1d9cc98",
+    "/home/runner/work/GOANGEL/GOANGEL/cache/weights.pkl": "d2db7159b4584517eb04a67395fa20c5f13a73b6a94752ad0530c2ec27265057"
+  },
+  "ts": "2026-11-26T00:13:24.020630",
+  "schema": "goangel-bzzoiro-2026.10-v2",
+  "feature_schema": 216,
+  "leagues_sig": "2f7f9751b5aa",
+  "odds_source": "footballdata-v1",
+  "selection_id": "cec9105c69ff"
+}

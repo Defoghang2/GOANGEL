@@ -1,0 +1,12 @@
+{
+  "stage": "train_kalman",
+  "files": {
+    "/home/runner/work/GOANGEL/GOANGEL/cache/stages/models/pb_KalmanBayesianModel.pkl": "0a23f424de40b1d94b2f3fd3ccebfa199aca395107126847b97e300b134b54e0"
+  },
+  "ts": "2026-11-25T20:45:52.641257",
+  "schema": "goangel-bzzoiro-2026.10-v2",
+  "feature_schema": 216,
+  "leagues_sig": "2f7f9751b5aa",
+  "odds_source": "footballdata-v1",
+  "selection_id": "cec9105c69ff"
+}

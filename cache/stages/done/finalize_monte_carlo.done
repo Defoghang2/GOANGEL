@@ -1,0 +1,12 @@
+{
+  "stage": "finalize_monte_carlo",
+  "files": {
+    "/home/runner/work/GOANGEL/GOANGEL/cache/stages/finalize/MonteCarloSimulator.pkl": "8d1aa38d94c8f89717f3b2937c86a5bb5d207e0423735cec1040fa7a5a232f46"
+  },
+  "ts": "2026-11-26T00:01:59.303636",
+  "schema": "goangel-bzzoiro-2026.10-v2",
+  "feature_schema": 216,
+  "leagues_sig": "2f7f9751b5aa",
+  "odds_source": "footballdata-v1",
+  "selection_id": "cec9105c69ff"
+}

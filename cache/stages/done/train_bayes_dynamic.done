@@ -1,0 +1,12 @@
+{
+  "stage": "train_bayes_dynamic",
+  "files": {
+    "/home/runner/work/GOANGEL/GOANGEL/cache/stages/models/pb_BayesianDynamicStrengthModel.pkl": "72afca5a83c3f85d7a58c75a880b0aec9a01f53da2a8e86ee78fb324b9f190d5"
+  },
+  "ts": "2026-11-25T20:42:03.011882",
+  "schema": "goangel-bzzoiro-2026.10-v2",
+  "feature_schema": 216,
+  "leagues_sig": "2f7f9751b5aa",
+  "odds_source": "footballdata-v1",
+  "selection_id": "cec9105c69ff"
+}
